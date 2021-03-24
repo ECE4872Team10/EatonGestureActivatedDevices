@@ -21,6 +21,7 @@
 #include <math.h>
 
 
+
 /* Debug */
 #define DEBUG                   0
 
@@ -334,10 +335,10 @@ private:
     bool wireWriteDataByte(uint8_t reg, uint8_t val);
     //bool wireWriteDataBlock(uint8_t reg, uint8_t *val, unsigned int len);
     bool wireReadDataByte(uint8_t reg, uint8_t &val);
-    //int wireReadDataBlock(uint8_t reg, uint8_t *val, unsigned int len);
+    int wireReadDataBlock(uint8_t reg, uint8_t *val, unsigned int len);
 
     /* Members */
-    int apdsFD = wiringPiI2CSetup(APDS9960_I2C_ADDR); // APDS File Descriptor for I2C
+    int apdsFD; // APDS File Descriptor for I2C
     gesture_data_type gesture_data_;
     int gesture_ud_delta_;
     int gesture_lr_delta_;

@@ -14,6 +14,7 @@ SparkFun_APDS9960 apds = SparkFun_APDS9960();
 
 int main(int argc, char **argv)
 {
+	wiringPiSetup();
 	// Set Interrupt Pin as an input
 	pinMode(Intpin, INPUT); 
 	// Initialize APDS-9960 (configure I2C and initial values)
@@ -24,15 +25,15 @@ int main(int argc, char **argv)
 	}
 	
 	// Start running the APDS-9960 gesture sensor engine
-	if ( apds.enableGestureSensor(true) ) {
+	if ( apds.enableGestureSensor(false) ) {
 		cout << "Gesture sensor is now running" << endl;
-    } else {
+	} else {
 		cout << "Something went wrong during gesture sensor init!" << endl;
 	}
 	
 	while(1)
 	{
-		if (digitalRead(Intpin) == 0)
+		if (digitalRead(Intpin) != 0)
 		{
 			handleGesture();
 		}
@@ -46,28 +47,31 @@ int main(int argc, char **argv)
 
 
 void handleGesture() {
-    if ( apds.isGestureAvailable() ) {
-    switch ( apds.readGesture() ) {
-      case DIR_UP:
-        cout << "UP" << endl;
-        break;
-      case DIR_DOWN:
-        cout << "DOWN" << endl;
-        break;
-      case DIR_LEFT:
-        cout << "LEFT" << endl;
-        break;
-      case DIR_RIGHT:
-        cout << "RIGHT" << endl;
-        break;
-      case DIR_NEAR:
-        cout << "NEAR" << endl;
-        break;
-      case DIR_FAR:
-        cout << "FAR" << endl;
-        break;
-      default:
-        cout << "NONE" << endl;
+	//cout << "Reading Gesture" << endl;
+	if ( apds.isGestureAvailable() ) {
+		cout << "Gesture is available" << endl;
+		cout << apds.readGesture() << endl;
+	switch ( apds.readGesture() ) {
+	case DIR_UP:
+		cout << "UP" << endl;
+		break;
+	case DIR_DOWN:
+		cout << "DOWN" << endl;
+		break;
+	case DIR_LEFT:
+		cout << "LEFT" << endl;
+		break;
+	case DIR_RIGHT:
+		cout << "RIGHT" << endl;
+		break;
+	case DIR_NEAR:
+		cout << "NEAR" << endl;
+		break;
+	case DIR_FAR:
+		cout << "FAR" << endl;
+		break;
+	default:
+		cout << "NONE" << endl;
     }
   }
 }

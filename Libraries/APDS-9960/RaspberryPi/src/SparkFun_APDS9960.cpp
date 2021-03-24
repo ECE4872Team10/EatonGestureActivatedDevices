@@ -20,6 +20,9 @@
  //#include <Wire.h>
  
  #include "SparkFun_APDS9960.h"
+ #include <iostream>
+
+using namespace std;
  
 /**
  * @brief Constructor - Instantiates SparkFun_APDS9960 object
@@ -37,6 +40,7 @@ SparkFun_APDS9960::SparkFun_APDS9960()
     
     gesture_state_ = 0;
     gesture_motion_ = DIR_NONE;
+    apdsFD = wiringPiI2CSetup(APDS9960_I2C_ADDR); // APDS File Descriptor for I2C
 }
  
 /**
@@ -479,18 +483,20 @@ int SparkFun_APDS9960::readGesture()
         delay(FIFO_PAUSE_TIME);
         
         /* Get the contents of the STATUS register. Is data still valid? */
-        /*if( !wireReadDataByte(APDS9960_GSTATUS, gstatus) ) {
+        if( !wireReadDataByte(APDS9960_GSTATUS, gstatus) ) {
+            cout << "Error in STATUS register " << endl;
             return ERROR;
         }
-        */
+        
         /* If we have valid data, read in FIFO */
-        //if( (gstatus & APDS9960_GVALID) == APDS9960_GVALID ) {
+        if( (gstatus & APDS9960_GVALID) == APDS9960_GVALID ) {
         
             /* Read the current FIFO level */
-            /*if( !wireReadDataByte(APDS9960_GFLVL, fifo_level) ) {
+            if( !wireReadDataByte(APDS9960_GFLVL, fifo_level) ) {
+                cout << "ERROR in FIFO Status Register" << endl;
                 return ERROR;
             }
-            */
+
 #if DEBUG
             Serial.print("FIFO Level: ");
             Serial.println(fifo_level);
@@ -498,10 +504,14 @@ int SparkFun_APDS9960::readGesture()
 
             /* If there's stuff in the FIFO, read it into our data block */
             if( fifo_level > 0) {
+                cout << "About to read data block" << endl;
                 bytes_read = wireReadDataBlock(  APDS9960_GFIFO_U, 
                                                 (uint8_t*)fifo_data, 
                                                 (fifo_level * 4) );
+                                               
+                cout << "Was able to read data block" << endl;
                 if( bytes_read == -1 ) {
+                    cout << "Error reading FIFO into data block" << endl;
                     return ERROR;
                 }
 #if DEBUG
@@ -511,6 +521,7 @@ int SparkFun_APDS9960::readGesture()
                     Serial.print(" ");
                 }
                 Serial.println();
+                
 #endif
 
                 /* If at least 1 set of data, sort the data into U/D/L/R */
@@ -552,8 +563,9 @@ int SparkFun_APDS9960::readGesture()
                     gesture_data_.total_gestures = 0;
                 }
             }
+            cout << "Made it to the end of IF" << endl;
         } else {
-    
+            cout << "Data is invalid, time to guess" << endl;
             /* Determine best guessed gesture and clean up */
             delay(FIFO_PAUSE_TIME);
             decodeGesture();
@@ -2205,27 +2217,40 @@ bool SparkFun_APDS9960::wireReadDataByte(uint8_t reg, uint8_t &val)
  * @param[in] len number of bytes to read
  * @return Number of bytes read. -1 on read error.
  */
- /*
 int SparkFun_APDS9960::wireReadDataBlock(   uint8_t reg, 
                                         uint8_t *val, 
                                         unsigned int len)
 {
-    unsigned char i = 0;
-    
+    //unsigned int i = 0;
+    int temp = 0;
     // Indicate which register we want to read from 
     if (!wireWriteByte(reg)) {
         return -1;
     }
     
     // Read block data
-    Wire.requestFrom(APDS9960_I2C_ADDR, len);
+    /*Wire.requestFrom(APDS9960_I2C_ADDR, len);
     while (Wire.available()) {
         if (i >= len) {
             return -1;
         }
         val[i] = Wire.read();
         i++;
+    }*/
+    //cout << "length = " << len << endl;
+    for (unsigned int i = 0; i <= len; i++) {
+        temp  = wiringPiI2CReadReg8(apdsFD, reg+0x01);
+        //cout << "Temp = " << temp << endl;
+        //cout << "Register = " << reg << endl;
+        //cout << "I = " << i << endl;
+        if (temp == -1) {
+            //cout<<"ReadDataBlock while loop errors out"<<endl;
+            return -1;
+        }
+        val[i] = temp;
+        //i++;
+        //cout << "length = " << len << "     i = " << i << endl;
     }
-
-    return i;
-}*/
+    //cout<<"ReadDataBlock while loop itterates successfully"<<endl;
+    return len;
+}
