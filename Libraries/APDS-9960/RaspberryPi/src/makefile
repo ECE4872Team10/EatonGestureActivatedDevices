@@ -1,2 +1,2 @@
 main:
-	g++ -Wall main.cpp SparkFun_APDS9960.cpp -lwiringPi -o test
+	g++ -Wall main.cpp APDS9960_RPi.cpp -lwiringPi -o gestest

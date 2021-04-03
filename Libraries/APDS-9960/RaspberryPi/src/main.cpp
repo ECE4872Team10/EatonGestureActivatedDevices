@@ -1,31 +1,29 @@
 #include <iostream>
-#include "SparkFun_APDS9960.h"
+#include "APDS9960_RPi.h"
 
 using namespace std;
-
-//#define APDS9960_INT    2 // Needs to be an interrupt pin
-const int Intpin = 7; // Interrupt pin
 
 // Global Functions
 void handleGesture();
 
 // Global Variables
-SparkFun_APDS9960 apds = SparkFun_APDS9960();
+const i apds_int = 7; // Interrupt pin
+APDS9960_RPi apds = APDS9960_RPi();
 
 int main(int argc, char **argv)
 {
 	wiringPiSetup();
 	// Set Interrupt Pin as an input
-	pinMode(Intpin, INPUT); 
+	pinMode(apds_int, INPUT); 
 	// Initialize APDS-9960 (configure I2C and initial values)
-	if (apds.init() ) {
+	if( apds.init() ) {
 		cout << "APDS-9960 initialization complete" << endl;
 	} else {
 		cout << "Something went wrong during APDS-9960 init!" << endl;
 	}
 	
 	// Start running the APDS-9960 gesture sensor engine
-	if ( apds.enableGestureSensor(false) ) {
+	if( apds.enableGestureSensor(false) ) {
 		cout << "Gesture sensor is now running" << endl;
 	} else {
 		cout << "Something went wrong during gesture sensor init!" << endl;
@@ -33,7 +31,7 @@ int main(int argc, char **argv)
 	
 	while(1)
 	{
-		if (digitalRead(Intpin) != 0)
+		if( digitalRead(apds_int) != 0 )
 		{
 			handleGesture();
 		}
