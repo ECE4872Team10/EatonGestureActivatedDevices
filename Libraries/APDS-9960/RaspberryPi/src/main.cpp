@@ -5,7 +5,7 @@ using namespace std;
 
 // Pins
 #define APDS9960_INT 7 // Needs to be an interrupt pin
-#define LED_PIN 11
+#define LED_PIN 0	// wiringPi pin 0 (GPIO-17) (It’s physical location is pin 11 on the GPIO connector)
 
 // Global Functions
 void handleGesture();
@@ -50,56 +50,45 @@ int main(int argc, char **argv)
 }
 
 
-void handleGesture() {
-	//cout << "Reading Gesture" << endl;
+void handleGesture()
+{
 	if ( apds.isGestureAvailable() ) {
 		cout << "Gesture is available" << endl;
-		//cout << apds.readGesture() << endl;
-	switch ( apds.readGesture() ) {
-	case DIR_UP:
-		cout << "UP" << endl;
-		// Turn on LED for a half a second
-		digitalWrite(LED_PIN, HIGH);
-		delay(500);
-		digitalWrite(LED_PIN, LOW);
-		break;
-	case DIR_DOWN:
-		cout << "DOWN" << endl;
-		// Turn on LED for a half a second
-		digitalWrite(LED_PIN, HIGH);
-		delay(500);
-		digitalWrite(LED_PIN, LOW);
-		break;
-	case DIR_LEFT:
-		cout << "LEFT" << endl;
-		// Turn on LED for a half a second
-		digitalWrite(LED_PIN, HIGH);
-		delay(500);
-		digitalWrite(LED_PIN, LOW);
-		break;
-	case DIR_RIGHT:
-		cout << "RIGHT" << endl;
-		// Turn on LED for a half a second
-		digitalWrite(LED_PIN, HIGH);
-		delay(500);
-		digitalWrite(LED_PIN, LOW);
-		break;
-	case DIR_NEAR:
-		cout << "NEAR" << endl;
-		// Turn on LED for a half a second
-		digitalWrite(LED_PIN, HIGH);
-		delay(500);
-		digitalWrite(LED_PIN, LOW);
-		break;
-	case DIR_FAR:
-		cout << "FAR" << endl;
-		// Turn on LED for a half a second
-		digitalWrite(LED_PIN, HIGH);
-		delay(500);
-		digitalWrite(LED_PIN, LOW);
-		break;
-	default:
-		cout << "NONE" << endl;
-    }
-  }
+		switch ( apds.readGesture() ) {
+			case DIR_UP:
+				cout << "UP" << endl;
+				blink();
+				break;
+			case DIR_DOWN:
+				cout << "DOWN" << endl;
+				blink();
+				break;
+			case DIR_LEFT:
+				cout << "LEFT" << endl;
+				blink();
+				break;
+			case DIR_RIGHT:
+				cout << "RIGHT" << endl;
+				blink();
+				break;
+			case DIR_NEAR:
+				cout << "NEAR" << endl;
+				blink();
+				break;
+			case DIR_FAR:
+				cout << "FAR" << endl;
+				blink();
+				break;
+			default:
+				cout << "NONE" << endl;
+		}
+	}
+}
+
+void blink()
+{
+	// Turn on LED for a half a second
+	digitalWrite(LED_PIN, HIGH);
+	delay(500);
+	digitalWrite(LED_PIN, LOW);
 }
