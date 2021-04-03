@@ -5,6 +5,7 @@ using namespace std;
 
 // Pins
 #define APDS9960_INT 7 // Needs to be an interrupt pin
+#define LED_PIN 11
 
 // Global Functions
 void handleGesture();
@@ -16,7 +17,10 @@ int main(int argc, char **argv)
 {
 	wiringPiSetup();
 	// Set Interrupt Pin as an input
-	pinMode(APDS9960_INT, INPUT); 
+	pinMode(APDS9960_INT, INPUT);
+	// Set LED pin as output
+	pinMode(LED_PIN, OUTPUT);
+	
 	// Initialize APDS-9960 (configure I2C and initial values)
 	if( apds.init() ) {
 		cout << "APDS-9960 initialization complete" << endl;
@@ -54,21 +58,45 @@ void handleGesture() {
 	switch ( apds.readGesture() ) {
 	case DIR_UP:
 		cout << "UP" << endl;
+		// Turn on LED for a half a second
+		digitalWrite(LED_PIN, HIGH);
+		delay(500);
+		digitalWrite(LED_PIN, LOW);
 		break;
 	case DIR_DOWN:
 		cout << "DOWN" << endl;
+		// Turn on LED for a half a second
+		digitalWrite(LED_PIN, HIGH);
+		delay(500);
+		digitalWrite(LED_PIN, LOW);
 		break;
 	case DIR_LEFT:
 		cout << "LEFT" << endl;
+		// Turn on LED for a half a second
+		digitalWrite(LED_PIN, HIGH);
+		delay(500);
+		digitalWrite(LED_PIN, LOW);
 		break;
 	case DIR_RIGHT:
 		cout << "RIGHT" << endl;
+		// Turn on LED for a half a second
+		digitalWrite(LED_PIN, HIGH);
+		delay(500);
+		digitalWrite(LED_PIN, LOW);
 		break;
 	case DIR_NEAR:
 		cout << "NEAR" << endl;
+		// Turn on LED for a half a second
+		digitalWrite(LED_PIN, HIGH);
+		delay(500);
+		digitalWrite(LED_PIN, LOW);
 		break;
 	case DIR_FAR:
 		cout << "FAR" << endl;
+		// Turn on LED for a half a second
+		digitalWrite(LED_PIN, HIGH);
+		delay(500);
+		digitalWrite(LED_PIN, LOW);
 		break;
 	default:
 		cout << "NONE" << endl;
