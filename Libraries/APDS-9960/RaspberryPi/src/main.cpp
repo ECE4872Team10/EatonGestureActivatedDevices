@@ -3,18 +3,20 @@
 
 using namespace std;
 
+// Pins
+#define APDS9960_INT 7 // Needs to be an interrupt pin
+
 // Global Functions
 void handleGesture();
 
 // Global Variables
-const i apds_int = 7; // Interrupt pin
 APDS9960_RPi apds = APDS9960_RPi();
 
 int main(int argc, char **argv)
 {
 	wiringPiSetup();
 	// Set Interrupt Pin as an input
-	pinMode(apds_int, INPUT); 
+	pinMode(APDS9960_INT, INPUT); 
 	// Initialize APDS-9960 (configure I2C and initial values)
 	if( apds.init() ) {
 		cout << "APDS-9960 initialization complete" << endl;
@@ -31,7 +33,7 @@ int main(int argc, char **argv)
 	
 	while(1)
 	{
-		if( digitalRead(apds_int) != 0 )
+		if( digitalRead(APDS9960_INT) != 0 )
 		{
 			handleGesture();
 		}
