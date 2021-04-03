@@ -54,7 +54,7 @@ void handleGesture() {
 	//cout << "Reading Gesture" << endl;
 	if ( apds.isGestureAvailable() ) {
 		cout << "Gesture is available" << endl;
-		cout << apds.readGesture() << endl;
+		//cout << apds.readGesture() << endl;
 	switch ( apds.readGesture() ) {
 	case DIR_UP:
 		cout << "UP" << endl;
