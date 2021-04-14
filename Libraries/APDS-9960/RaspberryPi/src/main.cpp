@@ -4,11 +4,15 @@
 using namespace std;
 
 // Pins
-#define APDS9960_INT 7 // Needs to be an interrupt pin
-#define LED_PIN 0	// wiringPi pin 0 (GPIO-17) (It’s physical location is pin 11 on the GPIO connector)
+#define APDS9960_INT 3 // Needs to be an interrupt pin
+#define LED_PIN 5	// wiringPi pin 0 (GPIO-17) (It’s physical location is pin 11 on the GPIO connector)
+
+#define TURN_ON 0 // GPIO 17 -- pin 11
+#define TURN_OFF 1 // GPIO 18 -- pin 12
 
 // Global Functions
 void handleGesture();
+void blink();
 
 // Global Variables
 APDS9960_RPi apds = APDS9960_RPi();
@@ -20,6 +24,8 @@ int main(int argc, char **argv)
 	pinMode(APDS9960_INT, INPUT);
 	// Set LED pin as output
 	pinMode(LED_PIN, OUTPUT);
+	pinMode(TURN_ON, OUTPUT);
+	pinMode(TURN_OFF, OUTPUT);
 	
 	// Initialize APDS-9960 (configure I2C and initial values)
 	if( apds.init() ) {
@@ -57,27 +63,33 @@ void handleGesture()
 		switch ( apds.readGesture() ) {
 			case DIR_UP:
 				cout << "UP" << endl;
-				blink();
+				digitalWrite(TURN_OFF, LOW);
+				delay(100);
+				digitalWrite(TURN_ON, HIGH);
 				break;
 			case DIR_DOWN:
 				cout << "DOWN" << endl;
-				blink();
+				digitalWrite(TURN_OFF, LOW);
+				delay(100);
+				digitalWrite(TURN_ON, HIGH);
 				break;
 			case DIR_LEFT:
 				cout << "LEFT" << endl;
-				blink();
+				digitalWrite(TURN_ON, LOW);
+				delay(100);
+				digitalWrite(TURN_OFF, HIGH);
 				break;
 			case DIR_RIGHT:
 				cout << "RIGHT" << endl;
-				blink();
+				digitalWrite(TURN_ON, LOW);
+				delay(100);
+				digitalWrite(TURN_OFF, HIGH);
 				break;
 			case DIR_NEAR:
 				cout << "NEAR" << endl;
-				blink();
 				break;
 			case DIR_FAR:
 				cout << "FAR" << endl;
-				blink();
 				break;
 			default:
 				cout << "NONE" << endl;
